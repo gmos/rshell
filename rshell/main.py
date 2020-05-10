@@ -1508,7 +1508,13 @@ class Device(object):
 
     def sync_time(self):
         """Sets the time on the pyboard to match the time on the host."""
-        now = time.localtime(time.time())
+        #gijs
+        if UTC:
+            now = time.gmtime()
+            print("UTC:", end=' ')
+        else:
+            now = time.localtime(time.time())
+            print("local:", end=' ')
         self.remote(set_time, (now.tm_year, now.tm_mon, now.tm_mday, now.tm_wday + 1,
                                now.tm_hour, now.tm_min, now.tm_sec, 0))
         return now
@@ -2804,6 +2810,14 @@ def real_main():
         help="Turns off some output (useful for testing)",
         default=False
     )
+    #gijs
+    parser.add_argument(
+        "--utc",
+        dest="utc",
+        action="store_true",
+        help="Runs board on UTC/Zulu time",
+        default=False
+    )
     parser.add_argument(
         "cmd",
         nargs=argparse.REMAINDER,
@@ -2827,6 +2841,7 @@ def real_main():
         print("Timing = %d" % args.timing)
         print("Quiet = %d" % args.quiet)
         print("BUFFER_SIZE = %d" % BUFFER_SIZE)
+        print("utc = %d" % args.utc)   #gijs
         print("Cmd = [%s]" % ', '.join(args.cmd))
 
     if args.version:
@@ -2838,6 +2853,9 @@ def real_main():
 
     global QUIET
     QUIET = args.quiet
+
+    global UTC   #gijs
+    UTC = args.utc
 
     global EDITOR
     EDITOR = args.editor
