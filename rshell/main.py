@@ -517,7 +517,7 @@ def resolve_path(path):
             new_comps.append(comp)
     if len(new_comps) == 1 and new_comps[0] == '':
         return '/'
-    return '/'.join(new_comps)
+    return os.path.realpath('/'.join(new_comps))
 
 
 def get_dev_and_path(filename):
